@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=submit] {
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.boldText {
+  font-weight: bold;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+</style>
+</head>
+<body>
+
+<h2>Lease Calculator</h2>
+<p>Please cross check the values with bank system before confirming to the customer.</p>
+
+<div class="container">
+  <form action="">
+    <div class="row">
+      <div class="col-25">
+        <label for="leaseAmount">Lease Amount</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="leaseAmount" name="leaseAmount" placeholder="0" oninput="reloadValues()">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-25">
+        <label for="period">Period</label>
+      </div>
+      <div class="col-75">
+        <select id="period" name="period" onchange="reloadValues()">
+          <option value="12">12 Months / 1 Year</option>
+          <option value="24">24 Months / 2 Years</option>
+          <option value="36">36 Months / 3 Years</option>
+          <option value="48">48 Months / 4 Years</option>
+          <option value="60">60 Months / 5 Years</option>
+          <option value="72">72 Months / 6 Years</option>
+          <option value="84">84 Months / 7 Years</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-25">
+        <label for="rate">Rate</label>
+      </div>
+      <div class="col-75">
+        <select id="rate" name="rate" onchange="reloadValues()">
+          <option value="7.00">7.00</option>
+          <option value="7.25">7.25</option>
+          <option value="7.50">7.50</option>
+          <option value="7.75">7.75</option>
+          <option value="8.00">8.00</option>
+          <option value="8.25">8.25</option>
+          <option value="8.50">8.50</option>
+          <option value="8.75">8.75</option>
+          <option value="9.00">9.00</option>
+          <option value="9.25">9.25</option>
+          <option value="9.50">9.50</option>
+          <option value="9.75">9.75</option>
+          <option value="10.00">10.00</option>
+          <option value="10.25">10.25</option>
+          <option value="10.50">10.50</option>
+          <option value="10.75">10.75</option>
+          <option value="11.00">11.00</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-25">
+        <label for="monthlyInstallment">Monthly Installment</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="monthlyInstallment" name="monthlyInstallment" placeholder="00" disabled>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-25">
+        <label for="stampDuty">Stamp Duty</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="stampDuty" name="stampDuty" placeholder="00" disabled>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-25">
+        <label for="documentationCharges">Documentation (incl. 8%VAT)</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="documentationCharges" name="documentationCharges" placeholder="00" disabled>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="firstInstallment">First Month Installment</label>
+      </div>
+      <div class="col-75">
+        <input type="text" id="firstInstallment" class="boldText" name="firstInstallment" placeholder="00" disabled>
+      </div>
+    </div>
+<!--    <div class="row">-->
+<!--      <input type="submit" value="Submit">-->
+<!--    </div>-->
+  </form>
+</div>
+
+<script>
+  function reloadValues() {
+    var leaseAmount = document.getElementById("leaseAmount").value;
+    var leaseAmountInLacks = leaseAmount/100000;
+    var periodInMonths = document.getElementById("period").value;
+    var periodInYears = periodInMonths/12;
+    var rate = document.getElementById("rate").value;
+
+    //Calculate Installment
+    var rateMatrix = {
+      "7.00": { "1":8603, "2":4452, "3":3070, "4":2381, "5":1969, "6":1696, "7":1501 },
+      "7.25": { "1":8613, "2":4462, "3":3081, "4":2392, "5":1980, "6":1707, "7":1513 },
+      "7.50": { "1":8622, "2":4473, "3":3092, "4":2403, "5":1992, "6":1719, "7":1525 },
+      "7.75": { "1":8632, "2":4483, "3":3103, "4":2414, "5":2003, "6":1730, "7":1537 },
+      "8.00": { "1":8642, "2":4493, "3":3113, "4":2126, "5":2015, "6":1742, "7":1549 },
+      "8.25": { "1":8651, "2":4504, "3":3124, "4":2437, "5":2026, "6":1754, "7":1561 },
+      "8.50": { "1":8661, "2":4514, "3":3135, "4":2448, "5":2038, "6":1766, "7":1573 },
+      "8.75": { "1":8671, "2":4525, "3":3146, "4":2459, "5":2049, "6":1778, "7":1585 },
+      "9.00": { "1":8681, "2":4535, "3":3157, "4":2470, "5":2061, "6":1790, "7":1597 },
+      "9.25": { "1":8690, "2":4545, "3":3168, "4":2482, "5":2073, "6":1802, "7":1610 },
+      "9.50": { "1":8700, "2":4556, "3":3179, "4":2493, "5":2084, "6":1814, "7":1622 },
+      "9.75": { "1":8710, "2":4566, "3":3190, "4":2504, "5":2096, "6":1826, "7":1634 },
+      "10.00": { "1":8719, "2":4577, "3":3201, "4":2516, "5":2108, "6":1838, "7":1647 },
+      "10.25": { "1":8729, "2":4587, "3":3212, "4":2527, "5":2119, "6":1850, "7":1659 },
+      "10.50": { "1":8739, "2":4598, "3":3223, "4":2539, "5":2131, "6":1862, "7":1672 },
+      "10.75": { "1":8749, "2":4608, "3":3234, "4":2550, "5":2143, "6":1874, "7":1685 },
+      "11.00": { "1":8758, "2":4619, "3":3245, "4":2562, "5":2155, "6":1887, "7":1697 },
+    }
+    var perLackPerMonthInstallment = rateMatrix[rate][periodInYears];
+    var installment = perLackPerMonthInstallment*leaseAmountInLacks;
+
+    //Calculating Documentation Charges
+    if (leaseAmount<3000000){
+      var documentationCharge = 3000
+    } else if(5000000>leaseAmount>3000000) {
+      var documentationCharge = 7000
+    }
+    var documentationChargeWithTax = documentationCharge + (documentationCharge*0.08);
+
+    //Calculating Stamp Duty
+    var stampDuty = perLackPerMonthInstallment*periodInMonths*leaseAmountInLacks/100;
+
+    //First Month Installment
+    var firstMonthInstallment = documentationChargeWithTax + stampDuty + installment;
+
+    document.getElementById("documentationCharges").value = documentationChargeWithTax;
+    document.getElementById("monthlyInstallment").value = installment;
+    document.getElementById("stampDuty").value = stampDuty;
+    document.getElementById("firstInstallment").value = firstMonthInstallment;
+
+  }
+
+</script>
+
+</body>
+</html>
