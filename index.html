@@ -213,11 +213,14 @@ input[type=submit]:hover {
     //First Month Installment
     var firstMonthInstallment = documentationChargeWithTax + stampDuty + installment;
 
-    document.getElementById("documentationCharges").value = documentationChargeWithTax;
-    document.getElementById("monthlyInstallment").value = installment;
-    document.getElementById("stampDuty").value = stampDuty;
-    document.getElementById("firstInstallment").value = firstMonthInstallment;
+    document.getElementById("documentationCharges").value = numberWithCommas(documentationChargeWithTax);
+    document.getElementById("monthlyInstallment").value = numberWithCommas(installment);
+    document.getElementById("stampDuty").value = numberWithCommas(stampDuty);
+    document.getElementById("firstInstallment").value = numberWithCommas(firstMonthInstallment);
 
+  }
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
 </script>
