@@ -76,6 +76,8 @@ input[type=submit]:hover {
 
 <h2>Lease Calculator</h2>
 <p>Please cross check the values with bank system before confirming to the customer.</p>
+<br/>
+<h3 id="calculatingDynamicText"></h3>
 
 <div class="container">
   <form action="">
@@ -100,6 +102,11 @@ input[type=submit]:hover {
           <option value="60">60 Months / 5 Years</option>
           <option value="72">72 Months / 6 Years</option>
           <option value="84">84 Months / 7 Years</option>
+          <option value="18">18 Months / 1.5 Years</option>
+          <option value="30">30 Months / 2.5 Years</option>
+          <option value="84">42 Months / 3.5 Years</option>
+          <option value="84">54 Months / 4.5 Years</option>
+          <option value="84">66 Months / 5.5 Years</option>
         </select>
       </div>
     </div>
@@ -204,6 +211,8 @@ input[type=submit]:hover {
       var documentationCharge = 3000
     } else if(5000000>leaseAmount>3000000) {
       var documentationCharge = 7000
+    } else {
+      var documentationCharge = 7000
     }
     var documentationChargeWithTax = documentationCharge + (documentationCharge*0.08);
 
@@ -213,11 +222,12 @@ input[type=submit]:hover {
     //First Month Installment
     var firstMonthInstallment = documentationChargeWithTax + stampDuty + installment;
 
-    document.getElementById("documentationCharges").value = numberWithCommas(documentationChargeWithTax);
-    document.getElementById("monthlyInstallment").value = numberWithCommas(installment);
-    document.getElementById("stampDuty").value = numberWithCommas(stampDuty);
-    document.getElementById("firstInstallment").value = numberWithCommas(firstMonthInstallment);
-
+    document.getElementById("documentationCharges").value = documentationChargeWithTax.toLocaleString();
+    document.getElementById("monthlyInstallment").value = installment.toLocaleString();
+    document.getElementById("stampDuty").value = stampDuty.toLocaleString();
+    document.getElementById("firstInstallment").value = firstMonthInstallment.toLocaleString();
+    document.getElementById("leaseAmount").value = leaseAmount.toLocaleString();
+    document.getElementById("calculatingDynamicText").innerHTML = "Calculating rates for " + numberWithCommas(leaseAmount);
   }
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
